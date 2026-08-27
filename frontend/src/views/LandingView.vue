@@ -38,15 +38,18 @@ async function signOut() {
   loadTools()
 }
 
-onMounted(loadTools)
+onMounted(() => {
+  loadTools()
+  window.syncThemeButtons?.()
+})
 </script>
 
 <template>
   <div class="landing">
     <header class="landing-header">
-      <div class="brand">🛫 PLANETY</div>
+      <div class="brand">PLANETY</div>
       <div class="header-actions">
-        <button class="ghost-btn" type="button" @click="toggleTheme">🌙</button>
+        <button class="ghost-btn" type="button" data-theme-toggle @click="toggleTheme">🌙</button>
         <template v-if="!navAuth.user">
           <button class="solid-btn" type="button" @click="toLogin">登录</button>
         </template>
@@ -59,7 +62,6 @@ onMounted(loadTools)
 
     <section class="hero">
       <div class="hero-title">PLANETY</div>
-      <div class="hero-subtitle">I was the shadow of the waxwing slain<br />By the false azure in the windowpane</div>
     </section>
 
     <main class="landing-main">
@@ -73,30 +75,34 @@ onMounted(loadTools)
           <article v-for="tool in tools" :key="tool.id" class="tool-card" @click="openTool(tool)">
             <div class="tool-icon">{{ tool.icon || '🔧' }}</div>
             <div class="tool-name">{{ tool.name }}</div>
-            <div class="tool-desc">{{ tool.description }}</div>
-            <div class="tool-enter">Enter →</div>
           </article>
         </div>
       </section>
     </main>
 
-    <footer class="landing-footer">PLANETY</footer>
+    <footer class="landing-footer">
+      <div class="footer-subtitle">I was the shadow of the waxwing slain<br />By the false azure in the windowpane</div>
+    </footer>
   </div>
 </template>
 
 <style scoped>
+/* 默认浅色主题 */
 .landing {
   min-height: 100vh;
-  color: #e8ecf4;
-  background: linear-gradient(160deg, #0b1026 0%, #14203f 45%, #1b2f55 100%);
+  color: #334155;
+  background: linear-gradient(160deg, #eef3fb 0%, #f8fbff 50%, #eaf1fb 100%);
   display: flex;
   flex-direction: column;
+  transition: background .3s, color .3s;
 }
 .landing::before {
   content: "";
   position: fixed;
   inset: 0;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity .3s;
   background-image:
     radial-gradient(1.5px 1.5px at 12% 18%, rgba(255,255,255,.7), transparent 60%),
     radial-gradient(1px 1px at 34% 8%, rgba(255,255,255,.5), transparent 60%),
@@ -113,31 +119,29 @@ onMounted(loadTools)
   align-items: center;
   justify-content: space-between;
   padding: 18px 32px;
-  border-bottom: 1px solid rgba(255, 255, 255, .08);
-  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(15, 23, 42, .08);
 }
-.brand { font-size: 1.25rem; font-weight: 700; letter-spacing: 1px; }
+.brand { font-size: 1.25rem; font-weight: 700; letter-spacing: 1px; color: #1e293b; }
 .header-actions { display: flex; align-items: center; gap: 12px; }
 .ghost-btn, .solid-btn {
-  padding: 7px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,.25);
-  background: transparent; color: #e8ecf4; cursor: pointer; font-size: .9rem;
+  padding: 7px 16px; border-radius: 8px; border: 1px solid rgba(15,23,42,.25);
+  background: transparent; color: #334155; cursor: pointer; font-size: .9rem;
   transition: all .2s;
 }
-.ghost-btn:hover { background: rgba(255,255,255,.1); }
-.solid-btn { background: #3b82f6; border-color: #3b82f6; font-weight: 600; }
+.ghost-btn:hover { background: rgba(15, 23, 42, .08); }
+.solid-btn { background: #3b82f6; border-color: #3b82f6; font-weight: 600; color: #fff; }
 .solid-btn:hover { background: #2f6fe0; }
-.nav-user-info { font-size: .9rem; color: #c7d2fe; }
+.nav-user-info { font-size: .9rem; color: #64748b; }
 .hero {
   position: relative;
   text-align: center;
-  padding: 64px 20px 40px;
+  padding: 26px 20px 18px;
 }
 .hero-title {
-  font-size: 3.4rem; font-weight: 800; letter-spacing: 6px;
-  background: linear-gradient(90deg, #93c5fd, #e0f2fe, #93c5fd);
+  font-size: 2.3rem; font-weight: 800; letter-spacing: 5px;
+  background: linear-gradient(90deg, #1d4ed8, #3b82f6, #1d4ed8);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.hero-subtitle { margin-top: 14px; color: #a5b4d0; font-size: 1.05rem; letter-spacing: 1px; }
 .landing-main {
   position: relative;
   flex: 1;
@@ -147,45 +151,84 @@ onMounted(loadTools)
   padding: 8px 24px 48px;
   box-sizing: border-box;
 }
-.tool-section { margin-top: 36px; }
+.tool-section { margin-top: 26px; }
 .section-title {
   font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px; color: #e0e7ff; letter-spacing: 2px;
+  display: flex; align-items: center; gap: 8px; color: #1e293b; letter-spacing: 2px;
 }
 .tool-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 14px;
 }
 .tool-card {
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 14px;
-  padding: 22px 18px;
+  background: rgba(255,255,255,.75);
+  border: 1px solid rgba(15,23,42,.08);
+  border-radius: 12px;
+  padding: 16px 12px;
+  text-align: center;
   cursor: pointer;
   transition: transform .2s, box-shadow .2s, border-color .2s;
 }
 .tool-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(147,197,253,.6);
+  border-color: #3b82f6;
   box-shadow: 0 10px 26px rgba(59,130,246,.18);
 }
-.tool-icon { font-size: 2rem; margin-bottom: 10px; }
-.tool-name { font-size: 1.05rem; font-weight: 700; color: #f1f5f9; }
-.tool-desc {
-  margin-top: 6px; font-size: .85rem; color: #9fb0cd;
-  min-height: 40px; line-height: 1.5;
-}
-.tool-enter { margin-top: 12px; font-size: .85rem; color: #93c5fd; font-weight: 600; }
+.tool-icon { font-size: 1.5rem; margin-bottom: 8px; }
+.tool-name { font-size: .95rem; font-weight: 700; color: #1e293b; }
 .empty-state {
-  background: rgba(255,255,255,.04);
-  border: 1px dashed rgba(255,255,255,.15);
+  background: rgba(15,23,42,.04);
+  border: 1px dashed rgba(15,23,42,.15);
   border-radius: 12px;
-  padding: 26px; text-align: center; color: #8fa3c4;
+  padding: 26px; text-align: center; color: #64748b;
 }
 .landing-footer {
   position: relative;
-  text-align: center; padding: 20px; font-size: .8rem; color: #64748b;
+  text-align: center; padding: 22px 20px 18px; font-size: .8rem; color: #94a3b8;
+  border-top: 1px solid rgba(15,23,42,.06);
+}
+.footer-subtitle {
+  margin-bottom: 6px; font-size: .9rem; color: #64748b;
+  letter-spacing: .5px; line-height: 1.5;
+}
+
+/* 深色主题覆盖 */
+[data-theme="dark"] .landing {
+  color: #e8ecf4;
+  background: linear-gradient(160deg, #0b1026 0%, #14203f 45%, #1b2f55 100%);
+}
+[data-theme="dark"] .landing::before { opacity: 1; }
+[data-theme="dark"] .landing-header {
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+  backdrop-filter: blur(6px);
+}
+[data-theme="dark"] .brand { color: #e8ecf4; }
+[data-theme="dark"] .ghost-btn, [data-theme="dark"] .solid-btn {
+  border-color: rgba(255,255,255,.25);
+  color: #e8ecf4;
+}
+[data-theme="dark"] .ghost-btn:hover { background: rgba(255,255,255,.1); }
+[data-theme="dark"] .nav-user-info { color: #c7d2fe; }
+[data-theme="dark"] .hero-title {
+  background: linear-gradient(90deg, #93c5fd, #e0f2fe, #93c5fd);
+  -webkit-background-clip: text; background-clip: text;
+}
+[data-theme="dark"] .footer-subtitle { color: #a5b4d0; }
+[data-theme="dark"] .section-title { color: #e0e7ff; }
+[data-theme="dark"] .tool-card {
+  background: rgba(255,255,255,.06);
+  border-color: rgba(255,255,255,.12);
+}
+[data-theme="dark"] .tool-card:hover { border-color: rgba(147,197,253,.6); }
+[data-theme="dark"] .tool-name { color: #f1f5f9; }
+[data-theme="dark"] .empty-state {
+  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.15);
+  color: #8fa3c4;
+}
+[data-theme="dark"] .landing-footer {
+  color: #64748b;
   border-top: 1px solid rgba(255,255,255,.06);
 }
 </style>

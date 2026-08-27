@@ -98,10 +98,20 @@ def init_db() -> None:
                 (username, pw_hash, salt, "admin"),
             )
     cur.execute("DELETE FROM nav_users WHERE username NOT IN ('migosp','liunbplus')")
-    if not cur.execute("SELECT id FROM tools WHERE url='/art'").fetchone():
+    # 工具清单种子：已有则改名，没有则插入
+    tool_name = "“大众创享”作品展示"
+    tool_desc = "大众创享作品浏览与评分"
+    tool_icon = "🎨"
+    tool_row = cur.execute("SELECT id FROM tools WHERE url='/art'").fetchone()
+    if tool_row:
+        cur.execute(
+            "UPDATE tools SET name=?, description=?, icon=? WHERE id=?",
+            (tool_name, tool_desc, tool_icon, tool_row["id"]),
+        )
+    else:
         cur.execute(
             "INSERT INTO tools (name, description, url, icon, visibility, sort_order) VALUES (?,?,?,?,?,?)",
-            ("艺术评分工具", "大众创享作品浏览与评分", "/art", "🎨", "public", 1),
+            (tool_name, tool_desc, "/art", tool_icon, "public", 1),
         )
 
     conn.commit()

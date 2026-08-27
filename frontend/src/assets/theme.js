@@ -37,4 +37,7 @@
     }
     document.documentElement.setAttribute('data-theme', theme);
     document.addEventListener('DOMContentLoaded', updateButtons);
+
+    // 供 Vue 组件挂载后调用，同步主题按钮图标（按钮由 Vue 在 DOMContentLoaded 之后才渲染）
+    window.syncThemeButtons = updateButtons;
 })();

@@ -31,7 +31,7 @@ async function submit() {
 <template>
   <main class="auth-page">
     <div class="auth-card">
-      <h1>🛫 PLANETY</h1>
+      <h1>PLANETY</h1>
       <p class="subtitle">Sign in</p>
       <div v-if="error" class="alert alert-error" style="display:block">{{ error }}</div>
       <form @submit.prevent="submit">

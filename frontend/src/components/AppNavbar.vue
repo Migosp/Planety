@@ -1,10 +1,13 @@
 <script setup>
+import { onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { auth, logout } from '../services/auth.js'
 
 const route = useRoute()
 const router = useRouter()
 const toggleTheme = () => window.toggleTheme()
+
+onMounted(() => window.syncThemeButtons?.())
 
 async function signOut() {
   await logout()
