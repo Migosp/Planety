@@ -1,6 +1,6 @@
 import { reactive } from 'vue'
 
-// 停机坪导航站独立登录态（与评分工具 art-user 互不干扰）
+// PLANETY 导航站独立登录态（与评分工具 art-user 互不干扰）
 function stored() {
   try { return JSON.parse(localStorage.getItem('nav-user')) } catch { return null }
 }

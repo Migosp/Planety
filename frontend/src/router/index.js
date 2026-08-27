@@ -3,10 +3,9 @@ import { auth } from '../services/auth.js'
 import { navAuth } from '../services/navAuth.js'
 
 const routes = [
-  // 停机坪导航站（游客可访问）
+  // PLANETY 导航站（游客可访问）
   { path: '/', component: () => import('../views/LandingView.vue') },
   { path: '/nav/login', component: () => import('../views/NavLoginView.vue'), meta: { navGuest: true } },
-  { path: '/nav/register', component: () => import('../views/NavRegisterView.vue'), meta: { navGuest: true } },
   // 艺术评分工具（挂载在 /art 前缀下）
   { path: '/art', component: () => import('../views/HomeView.vue'), meta: { auth: true } },
   { path: '/art/admin', component: () => import('../views/AdminView.vue'), meta: { auth: true, admin: true } },

@@ -1,4 +1,4 @@
-"""停机坪导航站独立会话（独立 cookie，与评分工具 session 互不干扰）"""
+"""PLANETY 导航站独立会话（独立 cookie，与评分工具 session 互不干扰）"""
 from typing import Optional
 
 from fastapi import HTTPException, Request

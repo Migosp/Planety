@@ -12,24 +12,11 @@ router = APIRouter(prefix="/api/nav")
 
 @router.post("/login")
 async def nav_login(request: Request, username: str = Form(...), password: str = Form(...)):
-    """导航站登录（独立账号体系）"""
+    """导航站登录（账号仅在代码中添加，无注册功能）"""
     user = nav_auth_service.login(username, password)
     if not user:
         return JSONResponse({"success": False, "message": "用户名或密码错误"}, 401)
     response = JSONResponse({"success": True, "user": {
-        "id": user["id"], "username": user["username"], "role": user["role"],
-    }})
-    set_nav_session(response, {"user_id": user["id"], "username": user["username"]})
-    return response
-
-
-@router.post("/register")
-async def nav_register(username: str = Form(...), password: str = Form(...)):
-    """导航站注册（独立账号体系）"""
-    success, message, user = nav_auth_service.register(username, password)
-    if not success:
-        return JSONResponse({"success": False, "message": message}, 400)
-    response = JSONResponse({"success": True, "message": message, "user": {
         "id": user["id"], "username": user["username"], "role": user["role"],
     }})
     set_nav_session(response, {"user_id": user["id"], "username": user["username"]})

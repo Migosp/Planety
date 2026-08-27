@@ -4,8 +4,7 @@ import { useRouter } from 'vue-router'
 import { navAuth, navLogout } from '../services/navAuth.js'
 
 const router = useRouter()
-const publicTools = ref([])
-const privateTools = ref([])
+const tools = ref([])
 const loading = ref(true)
 const error = ref('')
 const toggleTheme = () => window.toggleTheme()
@@ -17,8 +16,7 @@ async function loadTools() {
     const res = await fetch('/api/tools', { credentials: 'include' })
     const data = await res.json()
     if (data.success) {
-      publicTools.value = data.tools.filter(t => t.visibility === 'public')
-      privateTools.value = data.tools.filter(t => t.visibility === 'private')
+      tools.value = data.tools
     } else {
       error.value = data.message || '加载失败'
     }
@@ -34,7 +32,6 @@ function openTool(tool) {
 }
 
 function toLogin() { router.push('/nav/login') }
-function toRegister() { router.push('/nav/register') }
 
 async function signOut() {
   await navLogout()
@@ -47,62 +44,43 @@ onMounted(loadTools)
 <template>
   <div class="landing">
     <header class="landing-header">
-      <div class="brand">🛫 停机坪</div>
+      <div class="brand">🛫 PLANETY</div>
       <div class="header-actions">
         <button class="ghost-btn" type="button" @click="toggleTheme">🌙</button>
         <template v-if="!navAuth.user">
-          <button class="ghost-btn" type="button" @click="toLogin">登录</button>
-          <button class="solid-btn" type="button" @click="toRegister">注册</button>
+          <button class="solid-btn" type="button" @click="toLogin">登录</button>
         </template>
         <template v-else>
-          <span class="nav-user-info">{{ navAuth.user.username }}<template v-if="navAuth.user.role === 'admin'"> · 管理员</template></span>
+          <span class="nav-user-info">{{ navAuth.user.username }}</span>
           <button class="ghost-btn" type="button" @click="signOut">退出</button>
         </template>
       </div>
     </header>
 
     <section class="hero">
-      <div class="hero-title">停机坪</div>
-      <div class="hero-subtitle">起飞之前，先到这里看看 —— 各类工具的起飞入口</div>
+      <div class="hero-title">PLANETY</div>
+      <div class="hero-subtitle">I was the shadow of the waxwing slain<br />By the false azure in the windowpane</div>
     </section>
 
     <main class="landing-main">
       <div v-if="error" class="alert alert-error" style="display:block">{{ error }}</div>
 
       <section class="tool-section">
-        <div class="section-title">✈️ 公共工具</div>
-        <div v-if="loading" class="empty-state"><p>加载中…</p></div>
-        <div v-else-if="!publicTools.length" class="empty-state"><p>暂无公共工具</p></div>
+        <div class="section-title">TOOLS</div>
+        <div v-if="loading" class="empty-state"><p>Loading…</p></div>
+        <div v-else-if="!tools.length" class="empty-state"><p>No tools available</p></div>
         <div v-else class="tool-grid">
-          <article v-for="tool in publicTools" :key="tool.id" class="tool-card" @click="openTool(tool)">
+          <article v-for="tool in tools" :key="tool.id" class="tool-card" @click="openTool(tool)">
             <div class="tool-icon">{{ tool.icon || '🔧' }}</div>
             <div class="tool-name">{{ tool.name }}</div>
             <div class="tool-desc">{{ tool.description }}</div>
-            <div class="tool-enter">进入 →</div>
+            <div class="tool-enter">Enter →</div>
           </article>
         </div>
-      </section>
-
-      <section v-if="navAuth.user" class="tool-section">
-        <div class="section-title">🔒 私人工具</div>
-        <div v-if="!privateTools.length" class="empty-state"><div class="icon">🔐</div><p>暂无私人工具</p></div>
-        <div v-else class="tool-grid">
-          <article v-for="tool in privateTools" :key="tool.id" class="tool-card" @click="openTool(tool)">
-            <div class="tool-icon">{{ tool.icon || '🔧' }}</div>
-            <div class="tool-name">{{ tool.name }}</div>
-            <div class="tool-desc">{{ tool.description }}</div>
-            <div class="tool-enter">进入 →</div>
-          </article>
-        </div>
-      </section>
-
-      <section v-if="!navAuth.user" class="login-hint">
-        <p>🔒 登录后可解锁私人工具</p>
-        <button class="solid-btn" type="button" @click="toLogin">立即登录</button>
       </section>
     </main>
 
-    <footer class="landing-footer">Planety · 停机坪 · 综合工具导航</footer>
+    <footer class="landing-footer">PLANETY</footer>
   </div>
 </template>
 
@@ -172,7 +150,7 @@ onMounted(loadTools)
 .tool-section { margin-top: 36px; }
 .section-title {
   font-size: 1.1rem; font-weight: 700; margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px; color: #e0e7ff;
+  display: flex; align-items: center; gap: 8px; color: #e0e7ff; letter-spacing: 2px;
 }
 .tool-grid {
   display: grid;
@@ -204,11 +182,6 @@ onMounted(loadTools)
   border: 1px dashed rgba(255,255,255,.15);
   border-radius: 12px;
   padding: 26px; text-align: center; color: #8fa3c4;
-}
-.empty-state .icon { font-size: 1.6rem; margin-bottom: 6px; }
-.login-hint {
-  margin-top: 40px; text-align: center; color: #a5b4d0;
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
 }
 .landing-footer {
   position: relative;

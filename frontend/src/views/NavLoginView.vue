@@ -31,15 +31,15 @@ async function submit() {
 <template>
   <main class="auth-page">
     <div class="auth-card">
-      <h1>🛫 停机坪</h1>
-      <p class="subtitle">登录以查看私人工具</p>
+      <h1>🛫 PLANETY</h1>
+      <p class="subtitle">Sign in</p>
       <div v-if="error" class="alert alert-error" style="display:block">{{ error }}</div>
       <form @submit.prevent="submit">
         <div class="form-group"><label>用户名</label><input v-model.trim="form.username" required autofocus placeholder="请输入用户名" /></div>
         <div class="form-group"><label>密码</label><input v-model="form.password" type="password" required placeholder="请输入密码" /></div>
         <button class="btn btn-primary" :disabled="submitting">{{ submitting ? '登录中…' : '登 录' }}</button>
       </form>
-      <p class="auth-footer">还没有账号？<RouterLink to="/nav/register">注册一个</RouterLink> · <RouterLink to="/">返回首页</RouterLink></p>
+      <p class="auth-footer"><RouterLink to="/">返回首页</RouterLink></p>
     </div>
   </main>
 </template>

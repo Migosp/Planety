@@ -14,7 +14,7 @@ async function signOut() {
 
 <template>
   <nav class="navbar">
-    <RouterLink to="/" class="navbar-brand">🛫 停机坪 · 艺术评分工具</RouterLink>
+    <span class="navbar-brand">🎨 艺术评分工具</span>
     <ul class="navbar-nav">
       <li><RouterLink to="/art" :class="{ active: route.path === '/art' }">评分</RouterLink></li>
       <template v-if="auth.user?.role === 'admin'">

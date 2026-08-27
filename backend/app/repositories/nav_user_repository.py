@@ -43,4 +43,4 @@ def create(username: str, password: str, role: str = "user") -> tuple:
     conn.commit()
     user = dict(conn.execute("SELECT * FROM nav_users WHERE id=?", (cursor.lastrowid,)).fetchone())
     conn.close()
-    return True, "注册成功", user
+    return True, "创建成功", user

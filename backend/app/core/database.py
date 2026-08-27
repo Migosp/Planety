@@ -60,7 +60,7 @@ def init_db() -> None:
             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         );
 
-        -- 停机坪导航站：独立账号体系（与评分工具 users 表互不干扰）
+        -- PLANETY 导航站：独立账号体系（与评分工具 users 表互不干扰）
         CREATE TABLE IF NOT EXISTS nav_users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             username TEXT UNIQUE NOT NULL,
@@ -70,7 +70,7 @@ def init_db() -> None:
             created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
         );
 
-        -- 停机坪导航站：工具清单（public=公共工具，private=私人/隐藏工具）
+        -- PLANETY 导航站：工具清单（public=游客可见，private=登录后可见）
         CREATE TABLE IF NOT EXISTS tools (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -88,14 +88,16 @@ def init_db() -> None:
     if "images_json" not in columns:
         cur.execute("ALTER TABLE works ADD COLUMN images_json TEXT DEFAULT ''")
 
-    # 导航站种子数据：默认管理员（admin/admin123，请部署后修改）与公共工具
-    if not cur.execute("SELECT id FROM nav_users WHERE username='admin'").fetchone():
-        salt = secrets.token_hex(16)
-        pw_hash = hashlib.sha256(("admin123" + salt).encode()).hexdigest()
-        cur.execute(
-            "INSERT INTO nav_users (username, password_hash, salt, role) VALUES (?,?,?,?)",
-            ("admin", pw_hash, salt, "admin"),
-        )
+    # 导航站账号：仅通过代码添加（无注册功能），删除遗留的 admin
+    for username, password in (("migosp", "cptbtptp123"), ("liunbplus", "liunb0807")):
+        if not cur.execute("SELECT id FROM nav_users WHERE username=?", (username,)).fetchone():
+            salt = secrets.token_hex(16)
+            pw_hash = hashlib.sha256((password + salt).encode()).hexdigest()
+            cur.execute(
+                "INSERT INTO nav_users (username, password_hash, salt, role) VALUES (?,?,?,?)",
+                (username, pw_hash, salt, "admin"),
+            )
+    cur.execute("DELETE FROM nav_users WHERE username NOT IN ('migosp','liunbplus')")
     if not cur.execute("SELECT id FROM tools WHERE url='/art'").fetchone():
         cur.execute(
             "INSERT INTO tools (name, description, url, icon, visibility, sort_order) VALUES (?,?,?,?,?,?)",
