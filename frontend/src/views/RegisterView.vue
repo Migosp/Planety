@@ -17,7 +17,7 @@ async function submit() {
   const { data } = await request('/api/register', { method: 'POST', body })
   if (!data.success) return (error.value = data.message)
   setUser(data.user)
-  router.push('/')
+  router.push('/art')
 }
 </script>
 

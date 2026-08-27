@@ -44,7 +44,7 @@ onMounted(() => Promise.all([loadWorks(), loadUsers(), loadInvites()]))
 </script>
 
 <template><AppNavbar /><main class="container">
-  <div class="admin-header"><h2>管理后台</h2><RouterLink to="/admin/upload" class="btn btn-primary btn-sm">＋ 上传新作品</RouterLink></div>
+  <div class="admin-header"><h2>管理后台</h2><RouterLink to="/art/upload" class="btn btn-primary btn-sm">＋ 上传新作品</RouterLink></div>
   <section class="invite-section"><h3>🎟️ 邀请码管理</h3><p style="color:var(--text-secondary);font-size:.85rem;margin-bottom:12px">每个邀请码仅可注册一个评委账号</p><div style="display:flex;gap:8px;margin-bottom:16px"><button class="btn btn-primary btn-sm" @click="generateInvites(1)">生成 1 个</button><button class="btn btn-outline btn-sm" @click="generateInvites(5)">生成 5 个</button><button class="btn btn-outline btn-sm" @click="generateInvites(10)">生成 10 个</button><span style="color:#10b981">{{ inviteMessage }}</span></div><div class="invite-codes-list"><span v-for="code in invites" :key="code.id" class="invite-code-item" :class="{ used: code.is_used }" :title="code.is_used ? `已被 ${code.used_by_name || '用户'} 使用` : '可用'">{{ code.code }}</span><span v-if="!invites.length">暂无邀请码</span></div></section>
 
   <div class="admin-header"><h2>👥 账号管理</h2></div><div class="works-table" style="margin-bottom:36px"><table><thead><tr><th>ID</th><th>用户名</th><th>角色</th><th>注册时间</th><th>评分次数</th></tr></thead><tbody><tr v-for="user in users" :key="user.id"><td>{{ user.id }}</td><td><strong>{{ user.username }}</strong></td><td><span class="badge" :class="user.role === 'admin' ? 'badge-visible' : 'badge-neutral'">{{ user.role === 'admin' ? '管理员' : '评委' }}</span></td><td>{{ user.created_at }}</td><td>{{ user.rating_count }}</td></tr></tbody></table></div>
