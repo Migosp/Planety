@@ -27,8 +27,9 @@ async function loadTools() {
 }
 
 function openTool(tool) {
+  // 内部路径属于其它独立 SPA 项目，必须整页跳转（不能 router.push）
   if (/^https?:\/\//.test(tool.url)) window.open(tool.url, '_blank')
-  else router.push(tool.url)
+  else window.location.href = tool.url
 }
 
 function toLogin() { router.push('/nav/login') }

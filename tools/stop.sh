@@ -32,5 +32,4 @@ stop_process() {
   rm -f "$pid_file"
 }
 
-stop_process frontend
 stop_process backend

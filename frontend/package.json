@@ -1,12 +1,12 @@
 {
-  "name": "art-rating-frontend",
+  "name": "planety-frontend",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0 --port 7999 --strictPort",
+    "dev": "vite --host 0.0.0.0 --port 7998 --strictPort",
     "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 7999 --strictPort"
+    "preview": "vite preview --host 0.0.0.0 --port 7998 --strictPort"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "latest",

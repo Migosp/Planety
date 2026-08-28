@@ -32,9 +32,7 @@ start_process() {
 }
 
 start_process backend "$PROJECT_DIR/backend" \
-  "$PROJECT_DIR/backend/venv/bin/python" -m uvicorn main:app --host 0.0.0.0 --port 8000
-start_process frontend "$PROJECT_DIR/frontend" \
-  npm run dev
+  "$PROJECT_DIR/backend/venv/bin/python" -m uvicorn main:app --host 0.0.0.0 --port 8010
 
-echo "前端：http://127.0.0.1:7999"
-echo "后端：http://127.0.0.1:8000"
+echo "后端：http://127.0.0.1:8010"
+echo "前端：静态构建产物由 nginx 服务（/）"
